@@ -25,6 +25,7 @@ if(newQuery.trim()=== '') {
 }
   setQuery(newQuery);
   setPhotos([]);
+  setLoadMore(false);
   setPage(1);
 };
 
