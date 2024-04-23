@@ -5,8 +5,11 @@ import Loader from './Loader/Loader';
 import LoadMore from './LoadMoreBtn/LoadMoreBtn';
 import fetchPhotos from '../photo-api';
 import ErrorMessage from './ErrorMessage/ErrorMessage';
+import Modal from 'react-modal';
+import ImageModal from './ImageModal/ImageModal';
+import toast, { Toaster } from 'react-hot-toast';
 
-
+Modal.setAppElement('#root');
 
 function App() {
 const [photos, setPhotos]=useState([]);
@@ -17,7 +20,11 @@ const [isLoading, setIsLoading] = useState(false);
 const [loadMore, setLoadMore]= useState(false);
 
 const handleSearch = (newQuery) => {
-  setQuery(newQuery)
+if(newQuery.trim()=== '') {
+  toast.error('Please, input your search query');
+}
+  setQuery(newQuery);
+  setPhotos([]);
   setPage(1);
 };
 
@@ -47,16 +54,36 @@ useEffect(()=>{
     }
   };
   getPhotos();
-},[query, page])
+},[query, page]);
+
+const [opened, setOpened] = useState(false)
+const [openPhoto, setOpenPhoto]= useState({urls:{
+  full: 'none'
+}, description: 'none', user: {name:'none'}});
+
+const handleChoosePhoto = (id) => {
+const chosenPhoto = photos.filter(photo=> photo.id === id);
+setOpenPhoto({...chosenPhoto[0]});
+setOpened(true);
+}
+
+const closeModal = () => {setOpened(false)}
+
 
 
   return (
     <>
       <SearchBar onSearch={handleSearch}/>
+      <Toaster
+  position="top-left"
+  reverseOrder={false}
+  toastOptions={{duration: 1000}}
+/>
       {error && <ErrorMessage/>}
-      {photos.length >0 && <ImageGallery itemList={photos}/>}
+      {photos.length >0 && <ImageGallery itemList={photos} onChoosePhoto={handleChoosePhoto}/>}
       {isLoading && <Loader/>}
       {loadMore && <LoadMore onClick={handleLoadMore}/>}
+      <ImageModal isOpen={opened} item={openPhoto} closeModal={closeModal} />
     </>
   )
 }

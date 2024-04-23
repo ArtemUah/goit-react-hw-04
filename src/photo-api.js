@@ -13,7 +13,7 @@ const response = await axios.get('/search/photos', {
     client_id: accessKey,
     query: searchQuery,
     page: currentPage,
-    per_page: 20,
+    per_page: 12,
 }});
 return response.data.results;
 }
