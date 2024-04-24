@@ -15,5 +15,5 @@ const response = await axios.get('/search/photos', {
     page: currentPage,
     per_page: 12,
 }});
-return response.data.results;
+return response.data;
 }

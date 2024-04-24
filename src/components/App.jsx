@@ -18,11 +18,13 @@ const [page, setPage] = useState(1);
 const [error, setError] = useState(false);
 const [isLoading, setIsLoading] = useState(false);
 const [loadMore, setLoadMore]= useState(false);
+const [totalPages, setTotalPages] = useState(0);
 
 const handleSearch = (newQuery) => {
+  setError(false);
 if(newQuery.trim()=== '') {
   toast.error('Please, input your search query');
-}
+};
   setQuery(newQuery);
   setPhotos([]);
   setLoadMore(false);
@@ -30,7 +32,7 @@ if(newQuery.trim()=== '') {
 };
 
 const handleLoadMore = () => {
-  setPage(page + 1);
+    setPage(page + 1);
 }
 
 useEffect(()=>{
@@ -42,10 +44,23 @@ useEffect(()=>{
       setIsLoading(true);
       setLoadMore(false);
       const data = await fetchPhotos(query, page);
+
       setPhotos((prevState)=>{
-        return [...prevState, ...data];
+        return [...prevState, ...data.results];
       });
-      setLoadMore(true);
+  
+      setTotalPages(data.total_pages);
+      if(data.total_pages === 1 || page === totalPages){
+        setLoadMore(false);
+      } else {
+        setLoadMore(true)
+      }
+
+      if(data.total_pages === 0) {
+        toast.error('There is no results');
+        setLoadMore(false);
+            }
+
     } catch (error) {
       setError(true);
       setLoadMore(false);
