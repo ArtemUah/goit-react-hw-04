@@ -1,3 +1,4 @@
+import ImageCard from '../ImageCard/ImageCard';
 import css from '../ImageGallery/ImageGallery.module.css'
 
 export default function ImageGallery ({itemList, onChoosePhoto}) {
@@ -6,9 +7,7 @@ export default function ImageGallery ({itemList, onChoosePhoto}) {
             return (<li key={item.id} id={item.id} onClick={(e)=>{
                 onChoosePhoto(e.currentTarget.id);
             }}>
-                <div  className={css.item}>
-                  <img className={css.image} src={item.urls.small} alt={item.description} />
-                </div>
+                <ImageCard item={item}/>
             </li>)
         })}
     </ul>
